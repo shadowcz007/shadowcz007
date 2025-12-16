@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shadow / Chi Zhiwei - Interdisciplinary Creator</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'agent-black': '#050505',
+              'agent-dark': '#0a0a0a',
+              'agent-gray': '#1a1a1a',
+              'neon-cyan': '#00f0ff',
+              'neon-purple': '#bf00ff',
+              'neon-green': '#00ff41',
+            },
+            fontFamily: {
+              mono: ['"Fira Code"', 'monospace'],
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 6s ease-in-out infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Babel Standalone for JSX and ES Modules -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+      body {
+        background-color: #050505;
+        color: #e5e5e5;
+      }
+      .glass-panel {
+        background: rgba(20, 20, 20, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "recharts": "https://esm.sh/recharts@^3.6.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module">
+      import React, { useState } from 'https://esm.sh/react@18.2.0';
+      import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
+      
+      // Load Recharts and Lucide via ESM to avoid global variable issues
+      import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'https://esm.sh/recharts@2.12.7?external=react,react-dom';
+      import { 
+        Terminal, Cpu, Zap, Box, ArrowUpRight, Activity, Mic, Layers, 
+        GraduationCap, Github, Twitter, Mail, ExternalLink, Menu, X 
+      } from 'https://esm.sh/lucide-react@0.344.0?external=react';
+
+      // --- DATA CONSTANTS ---
+      const INTRO = {
+        name: "Chi Zhiwei / Shadow",
+        title: "Interdisciplinary Creator & AI Architect",
+        tagline: "Mixlab Founder | AI Coding Coach | Vibe Programming Pioneer",
+        bio: "Crossing the boundaries between Design, Technology, and Art. Founder of Mixlab (80k+ members). Former Ant Group Architect. Author of 'Vibe Coding'. Exploring the infinite possibilities of AgentOS and Super Individuals.",
+      };
+
+      const STATS = [
+        { label: "Community Members", value: "80k+" },
+        { label: "Core Contributors", value: "3k+" },
+        { label: "Years Experience", value: "10+" },
+        { label: "Talks Given", value: "50+" },
+      ];
+
+      const RADAR_DATA = [
+        { subject: 'AI/LLM', A: 100, fullMark: 100 },
+        { subject: 'Design (UI/UX)', A: 90, fullMark: 100 },
+        { subject: 'Frontend/Arch', A: 95, fullMark: 100 },
+        { subject: 'Community', A: 85, fullMark: 100 },
+        { subject: 'Metaverse/XR', A: 80, fullMark: 100 },
+        { subject: 'Education', A: 85, fullMark: 100 },
+      ];
+
+      const TIMELINE = [
+        { year: "2025", title: "Vibe Coding & AgentOS", role: "Evangelist", type: "milestone" },
+        { year: "2015-Now", title: "Mixlab Community", role: "Founder", description: "Grew to 80k+ members, connecting design & tech.", type: "work" },
+        { year: "Past", title: "Ant Group (Alipay)", role: "Senior Frontend Expert / Architect", description: "Intelligent UI, Digital Human Infrastructure, served 100M+ users daily.", type: "work" },
+        { year: "Past", title: "GET Knowledge Engine", role: "Co-founder & Chief AI Architect", type: "work" },
+        { year: "Past", title: "ZTE & CMBC", role: "Senior Dev & UX Designer", type: "work" },
+        { year: "Education", title: "Shanghai Jiao Tong University", role: "Alumni", type: "education" },
+        { year: "Education", title: "Tongji University", role: "Alumni", type: "education" },
+      ];
+
+      const PROJECTS = [
+        {
+          title: "Mix-Copilot",
+          category: "AI",
+          description: "Knowledge assistant based on LLMs, acting as an AI employee library.",
+          tags: ["LLM", "Agent", "Productivity"]
+        },
+        {
+          title: "ComfyUI Mixlab Nodes",
+          category: "Open Source",
+          description: "Real-time design workflow nodes for ComfyUI. AGIUI for generic human-computer interaction.",
+          tags: ["Python", "ComfyUI", "Generative AI"]
+        },
+        {
+          title: "CodeNow.wiki",
+          category: "Community",
+          description: "AI Programming Challenge & Community. Promoting 'Vibe Coding'.",
+          tags: ["Education", "Hackathon"]
+        },
+        {
+          title: "M-Zone (Metaverse)",
+          category: "Spatial Design",
+          description: "Infinite dimensional space hosted heavily on mobile city tech. 'Unbounded Tunnel' NFT project.",
+          tags: ["Metaverse", "WebGL", "NFT"]
+        },
+        {
+          title: "Digital Human 'False'",
+          category: "Incubation",
+          description: "Virtual idol and brand owner incubated within the community.",
+          tags: ["Digital Human", "Branding"]
+        },
+        {
+          title: "100+ Landscape Projects",
+          category: "Design Roots",
+          description: "From Shanghai Xidu Park to Luoyang Water Theme Park (Before transitioning to Tech).",
+          tags: ["Landscape Architecture", "Urban Design"]
+        }
+      ];
+
+      const TALKS = [
+        { date: "2025-10", title: "How to Build AgentOS", event: "Tongji University Alumni" },
+        { date: "2025-02", title: "AI Programming & Multi-Agents", event: "Tsinghua Alumni Association" },
+        { date: "2024-05", title: "AI Tooling Commercialization", event: "Lishui University" },
+        { date: "2023-12", title: "Generative AI Implementation: GPT & ComfyUI", event: "CEIBS" },
+        { date: "2023-09", title: "AIGC Content Generation Tech", event: "SAP UXDAY" },
+        { date: "2022-09", title: "Metaverse & Web3", event: "BMW China Design Center" },
+        { date: "2022-06", title: "Metaverse · Web3 · DAO", event: "Sony China Design Center" },
+        { date: "2022-04", title: "Metaverse Marketing", event: "Tsinghua School of Journalism" },
+        { date: "2021-09", title: "Intelligent Design Tools", event: "Zhejiang University" },
+      ];
+
+      const PARTNERS = [
+        "Tongji University Design AI Lab",
+        "Fudan University",
+        "Tezign",
+        "Unity3D Research",
+        "Google (via collaborations)",
+        "Baidu PaddlePaddle",
+        "400 Boxes"
+      ];
+
+      // --- COMPONENTS ---
+      
+      const Hero = () => {
+        return (
+          <section className="relative min-h-screen flex flex-col justify-center items-center px-6 py-20 overflow-hidden">
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(20,20,20,0.9)_1px,transparent_1px),linear-gradient(90deg,rgba(20,20,20,0.9)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] z-0 pointer-events-none opacity-50"></div>
+            
+            <div className="z-10 text-center max-w-4xl mx-auto">
+              <div className="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neon-cyan/10 border border-neon-cyan/30 text-neon-cyan text-sm font-mono animate-float">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan"></span>
+                </span>
+                System Online: AgentOS V1.0
+              </div>
+
+              <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4 text-white">
+                HELLO, I AM <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple">{INTRO.name.split('/')[1].trim()}</span>
+              </h1>
+              
+              <h2 className="text-2xl md:text-3xl text-gray-400 font-light mb-8 font-mono">
+                {INTRO.title}
+              </h2>
+
+              <p className="text-lg text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                {INTRO.bio}
+              </p>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                 {[
+                   { icon: <Terminal className="w-5 h-5" />, label: "Vibe Coding" },
+                   { icon: <Cpu className="w-5 h-5" />, label: "AI Agent" },
+                   { icon: <Box className="w-5 h-5" />, label: "Design" },
+                   { icon: <Zap className="w-5 h-5" />, label: "Innovation" },
+                 ].map((item, idx) => (
+                   <div key={idx} className="flex items-center justify-center gap-2 p-3 glass-panel rounded-lg hover:bg-white/5 transition-colors cursor-default">
+                     <span className="text-neon-cyan">{item.icon}</span>
+                     <span className="font-mono text-sm">{item.label}</span>
+                   </div>
+                 ))}
+              </div>
+
+              <div className="flex flex-col md:flex-row gap-4 justify-center">
+                  <button className="px-8 py-3 bg-neon-cyan text-black font-bold rounded hover:bg-cyan-400 transition-all shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+                    Explore Projects
+                  </button>
+                  <button className="px-8 py-3 border border-white/20 hover:border-white/50 bg-white/5 text-white rounded transition-all font-mono">
+                    Initialize Protocol ->
+                  </button>
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      const RadarSkill = () => {
+        return (
+          <div className="h-[400px] w-full glass-panel rounded-2xl p-4 border-l-4 border-l-neon-purple">
+            <h3 className="text-xl font-mono text-white mb-4 px-4 pt-2">Skill Matrix</h3>
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={RADAR_DATA}>
+                <PolarGrid stroke="#333" />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: '#aaa', fontSize: 12 }} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                <Radar
+                  name="Shadow"
+                  dataKey="A"
+                  stroke="#bf00ff"
+                  strokeWidth={2}
+                  fill="#bf00ff"
+                  fillOpacity={0.3}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      };
+
+      const Section = ({ title, subtitle, id, children, className = "" }) => {
+        return (
+          <section id={id} className={`py-20 px-6 border-t border-white/5 ${className}`}>
+            <div className="max-w-7xl mx-auto">
+              <div className="mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 flex items-center gap-3">
+                   <span className="w-2 h-8 bg-neon-green rounded-full block"></span>
+                   {title}
+                </h2>
+                {subtitle && <p className="text-gray-400 font-mono ml-5">{subtitle}</p>}
+              </div>
+              {children}
+            </div>
+          </section>
+        );
+      };
+
+      const ProjectCard = ({ project }) => {
+        return (
+          <div className="group relative bg-agent-gray border border-white/5 hover:border-neon-cyan/50 p-6 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+              <ArrowUpRight className="text-neon-cyan w-6 h-6" />
+            </div>
+            
+            <div className="mb-4">
+              <span className="text-xs font-mono text-neon-purple border border-neon-purple/30 px-2 py-1 rounded bg-neon-purple/10">
+                {project.category}
+              </span>
+            </div>
+            
+            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-neon-cyan transition-colors">
+              {project.title}
+            </h3>
+            
+            <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+              {project.description}
+            </p>
+            
+            <div className="flex flex-wrap gap-2 mt-auto">
+              {project.tags.map(tag => (
+                <span key={tag} className="text-xs text-gray-500 font-mono bg-black/50 px-2 py-1 rounded">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+            
+            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-neon-cyan to-neon-purple transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+          </div>
+        );
+      };
+
+      const App = () => {
+        const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+        return (
+          <div className="bg-agent-black text-gray-300 min-h-screen font-sans selection:bg-neon-cyan selection:text-black">
+            
+            {/* Navigation */}
+            <nav className="fixed top-0 w-full z-50 glass-panel border-b border-white/10">
+              <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div className="font-mono font-bold text-xl text-white tracking-tighter">
+                  SHADOW<span className="text-neon-cyan">.AI</span>
+                </div>
+                
+                <div className="hidden md:flex gap-8 text-sm font-medium">
+                  {['About', 'Projects', 'Timeline', 'Talks'].map(item => (
+                    <a key={item} href={`#${item.toLowerCase()}`} className="hover:text-neon-cyan transition-colors">
+                      {item}
+                    </a>
+                  ))}
+                </div>
+
+                <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {isMenuOpen ? <X /> : <Menu />}
+                </button>
+              </div>
+
+              {/* Mobile Menu */}
+              {isMenuOpen && (
+                 <div className="md:hidden glass-panel border-b border-white/10 absolute w-full p-6 flex flex-col gap-4">
+                   {['About', 'Projects', 'Timeline', 'Talks'].map(item => (
+                    <a 
+                      key={item} 
+                      href={`#${item.toLowerCase()}`} 
+                      className="block text-lg font-mono hover:text-neon-cyan"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item}
+                    </a>
+                  ))}
+                 </div>
+              )}
+            </nav>
+
+            <Hero />
+
+            {/* Statistics Banner */}
+            <div className="border-y border-white/10 bg-agent-dark">
+              <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+                {STATS.map((stat, i) => (
+                  <div key={i} className="text-center">
+                    <div className="text-3xl md:text-4xl font-bold text-white mb-2 font-mono">{stat.value}</div>
+                    <div className="text-sm text-gray-500 uppercase tracking-wider">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Interdisciplinary Profile */}
+            <Section id="about" title="The Architect" subtitle="Interdisciplinary Core">
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="md:col-span-1">
+                   <RadarSkill />
+                </div>
+                <div className="md:col-span-2 space-y-6 text-gray-400">
+                  <p className="text-lg">
+                    I view myself as an <span className="text-white font-semibold">Agent</span> operating across multiple domains. My background combines rigorous engineering (Ant Group Architect) with creative exploration (Design & Art).
+                  </p>
+                  <p>
+                    Currently, I am focused on <span className="text-neon-cyan">Vibe Coding</span>—a philosophy where AI empowers individuals to become super-productive creators. I build tools, communities, and educational frameworks to help others achieve this state.
+                  </p>
+                  
+                  <div className="grid grid-cols-2 gap-4 mt-8">
+                     <div className="p-4 bg-white/5 rounded border border-white/10">
+                       <h4 className="text-white font-mono mb-2 flex items-center gap-2"><Layers size={16}/> Roles</h4>
+                       <ul className="text-sm space-y-1">
+                         <li>• Mixlab Founder</li>
+                         <li>• AI Programming Coach</li>
+                         <li>• 400 Boxes CTO</li>
+                         <li>• Fudan Univ. Tech Consultant</li>
+                       </ul>
+                     </div>
+                     <div className="p-4 bg-white/5 rounded border border-white/10">
+                       <h4 className="text-white font-mono mb-2 flex items-center gap-2"><GraduationCap size={16}/> Alumni</h4>
+                       <ul className="text-sm space-y-1">
+                         <li>• Shanghai Jiao Tong Univ.</li>
+                         <li>• Tongji University</li>
+                       </ul>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </Section>
+
+            {/* Projects */}
+            <Section id="projects" title="Works & Labs" subtitle="From Landscape to Metaverse">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {PROJECTS.map((project, idx) => (
+                  <ProjectCard key={idx} project={project} />
+                ))}
+              </div>
+            </Section>
+
+            {/* Timeline */}
+            <Section id="timeline" title="Trajectory" subtitle="Career Evolution">
+              <div className="relative border-l border-white/10 ml-6 md:ml-12 space-y-12">
+                {TIMELINE.map((item, index) => (
+                  <div key={index} className="relative pl-8 md:pl-12">
+                    <div className={`absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full ${item.type === 'milestone' ? 'bg-neon-cyan shadow-[0_0_10px_#00f0ff]' : 'bg-gray-600'}`}></div>
+                    <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
+                      <span className="font-mono text-neon-cyan text-sm">{item.year}</span>
+                      <h3 className="text-xl font-bold text-white">{item.title}</h3>
+                    </div>
+                    <p className="text-neon-purple text-sm font-medium mb-2">{item.role}</p>
+                    {item.description && <p className="text-gray-500 text-sm max-w-2xl">{item.description}</p>}
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            {/* Talks */}
+            <Section id="talks" title="Knowledge Transfer" subtitle="Lectures & Workshops">
+              <div className="glass-panel rounded-xl overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm text-gray-400">
+                    <thead className="bg-white/5 text-gray-200 font-mono uppercase text-xs">
+                      <tr>
+                        <th className="p-4">Date</th>
+                        <th className="p-4">Topic</th>
+                        <th className="p-4">Event/Host</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {TALKS.map((talk, i) => (
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                          <td className="p-4 font-mono text-neon-cyan">{talk.date}</td>
+                          <td className="p-4 font-medium text-white">{talk.title}</td>
+                          <td className="p-4">{talk.event}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </Section>
+
+            {/* Partners */}
+            <Section id="partners" title="Ecosystem" subtitle="Partners & Collaborators">
+               <div className="flex flex-wrap gap-4">
+                 {PARTNERS.map((p, i) => (
+                   <span key={i} className="px-4 py-2 border border-white/10 rounded-full text-sm hover:border-neon-cyan/50 hover:text-white transition-colors cursor-default">
+                     {p}
+                   </span>
+                 ))}
+               </div>
+            </Section>
+
+            {/* Footer */}
+            <footer className="bg-black py-12 border-t border-white/10 mt-20">
+              <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+                <div>
+                  <h2 className="text-2xl font-mono font-bold text-white mb-2">Shadow / Chi Zhiwei</h2>
+                  <p className="text-gray-500 text-sm max-w-md">
+                    Empowering the next generation of creators through AI, Design, and Code.
+                    Based in Shanghai.
+                  </p>
+                </div>
+                
+                <div className="flex gap-6">
+                  <a href="https://github.com/shadow" className="text-gray-400 hover:text-white transition-colors"><Github /></a>
+                  <a href="https://twitter.com" className="text-gray-400 hover:text-white transition-colors"><Twitter /></a>
+                  <a href="mailto:contact@mixlab.top" className="text-gray-400 hover:text-white transition-colors"><Mail /></a>
+                </div>
+              </div>
+              <div className="text-center text-gray-700 text-xs mt-12 font-mono">
+                © {new Date().getFullYear()} Mixlab. All systems nominal.
+              </div>
+            </footer>
+          </div>
+        );
+      };
+
+      const root = createRoot(document.getElementById('root'));
+      root.render(
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      );
+    </script>
+  </body>
+</html>
