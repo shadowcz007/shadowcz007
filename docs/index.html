@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shadow / Chi Zhiwei - Interdisciplinary Creator</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -38,10 +37,8 @@
       }
     </script>
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     
-    <!-- Babel Standalone for JSX and ES Modules -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -71,21 +68,30 @@
         background: #555;
       }
     </style>
- 
+
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.344.0?external=react",
+        "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom"
+      }
+    }
+    </script>
 </head>
   <body>
     <div id="root"></div>
 
     <script type="text/babel" data-type="module">
-      import React, { useState } from 'https://esm.sh/react@18.2.0';
-      import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
-      
-      // Load Recharts and Lucide via ESM to avoid global variable issues
-      import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'https://esm.sh/recharts@2.12.7?external=react,react-dom';
+      // 修复：直接使用 importmap 定义的名称，确保单例模式
+      import React, { useState } from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
       import { 
         Terminal, Cpu, Zap, Box, ArrowUpRight, Activity, Mic, Layers, 
         GraduationCap, Github, Twitter, Mail, ExternalLink, Menu, X 
-      } from 'https://esm.sh/lucide-react@0.344.0?external=react';
+      } from 'lucide-react';
 
       // --- DATA CONSTANTS ---
       const INTRO = {
